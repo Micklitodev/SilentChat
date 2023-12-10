@@ -17,6 +17,7 @@ export default function ChatBox() {
   const pathname = usePathname()
 
   const scrollToBottom = () => {
+    //@ts-ignore
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   };
 
@@ -36,7 +37,6 @@ export default function ChatBox() {
         promptShown.current = true;
       }
 
-      // Now, we ensure both groupName and username are available before joining
       if (groupName && username) {
         await new Promise(resolve => {
           socket.emit('joinGroup', groupName, username, resolve);
@@ -73,6 +73,7 @@ export default function ChatBox() {
 
   useEffect(() => {
     const handleMessage = (msg: any) => {
+       //@ts-ignore
       setMessages((prevMessages) => [...prevMessages, msg]);
     };
 
@@ -91,8 +92,9 @@ export default function ChatBox() {
       <div className='ml-16'>
         <div className='mt-10 border border-white rounded-md px-2 w-[90vw] h-[60vh] overflow-y-scroll overflow-x-hidden'>
           <ul>
-            {messages.map((msg, index) => (
+            {messages.map((msg:any, index) => (
               <div key={index}>
+          
                 <li className='flex'> {msg.username}: <p className='text-green-400 ml-2'> {msg.content} </p></li>
               </div>
             ))}
