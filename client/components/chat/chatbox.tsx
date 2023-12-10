@@ -1,0 +1,117 @@
+"use client"
+
+import { useEffect, useState, useRef } from 'react';
+import io from 'socket.io-client';
+import Input from '../ui/input';
+import Button from '../ui/button';
+import { usePathname } from 'next/navigation';
+
+const socket = io(`http://localhost:3001`);
+
+export default function ChatBox() {
+  const [messages, setMessages] = useState([]);
+  const [messageInput, setMessageInput] = useState('');
+  const [username, setUsername] = useState('');
+  const messagesEndRef = useRef(null);
+  const promptShown = useRef(false);
+  const pathname = usePathname()
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  };
+
+
+  useEffect(() => {
+    const joinGroup = async () => {
+      const groupName = pathname.split('/').pop();
+
+      if (!username && !promptShown.current) {
+        const user = prompt('Please enter your username:');
+
+        if (user === null || user.trim() === '') {
+          return;
+        }
+
+        setUsername(user);
+        promptShown.current = true;
+      }
+
+      // Now, we ensure both groupName and username are available before joining
+      if (groupName && username) {
+        await new Promise(resolve => {
+          socket.emit('joinGroup', groupName, username, resolve);
+        });
+      }
+    };
+
+    joinGroup();
+  }, [username, pathname]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const sendMessage = () => {
+    const groupName = pathname.split('/').pop();
+    socket.emit('message', { content: messageInput, username, groupName });
+    setMessageInput('');
+  };
+
+
+
+  const handleDisconnect = () => {
+    socket.disconnect();
+    window.location.assign('/');
+  };
+
+  const handleKeyPress = (e: any) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
+  useEffect(() => {
+    const handleMessage = (msg: any) => {
+      setMessages((prevMessages) => [...prevMessages, msg]);
+    };
+
+    socket.on('message', handleMessage);
+
+    return () => {
+      socket.off('message', handleMessage);
+    };
+  }, []);
+
+  return (
+    <>
+      <Button onClick={() => handleDisconnect()} className="border border-white rounded px-2 py-2">
+        Exit
+      </Button>
+      <div className='ml-16'>
+        <div className='mt-10 border border-white rounded-md px-2 w-[90vw] h-[60vh] overflow-y-scroll overflow-x-hidden'>
+          <ul>
+            {messages.map((msg, index) => (
+              <div key={index}>
+                <li className='flex'> {msg.username}: <p className='text-green-400 ml-2'> {msg.content} </p></li>
+              </div>
+            ))}
+          </ul>
+          <div ref={messagesEndRef} />
+        </div>
+        <div className='flex'>
+          <Input
+            className='w-[86.2vw]'
+            name='msg'
+            value={messageInput}
+            onChange={(e) => setMessageInput(e.target.value)}
+            onKeyDown={handleKeyPress}
+          />
+          <button className='border border-white rounded px-2' onClick={sendMessage}>
+            Send
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
