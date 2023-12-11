@@ -57,8 +57,6 @@ export default function ChatBox() {
     setMessageInput('');
   };
 
-
-
   const handleDisconnect = () => {
     socket.disconnect();
     window.location.assign('/');
@@ -73,7 +71,7 @@ export default function ChatBox() {
 
   useEffect(() => {
     const handleMessage = (msg: any) => {
-       //@ts-ignore
+      //@ts-ignore
       setMessages((prevMessages) => [...prevMessages, msg]);
     };
 
@@ -92,9 +90,9 @@ export default function ChatBox() {
       <div className='ml-16'>
         <div className='mt-10 border border-white rounded-md px-2 w-[90vw] h-[60vh] overflow-y-scroll overflow-x-hidden'>
           <ul>
-            {messages.map((msg:any, index) => (
+            {messages.map((msg: any, index) => (
               <div key={index}>
-          
+
                 <li className='flex'> {msg.username}: <p className='text-green-400 ml-2'> {msg.content} </p></li>
               </div>
             ))}
