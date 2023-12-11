@@ -24,6 +24,9 @@ io.on('connection', (socket) => {
     });
 
     socket.on('message', (msg) => {
+        if (msg.content === '') {
+            return;
+        }
         io.to(msg.groupName).emit('message', msg);
     });
 
