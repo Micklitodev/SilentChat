@@ -25,7 +25,7 @@ const Chat = () => {
 
     return (
         <div>
-            <h1 className="mb-10 mt-4">Welcome to Anonmeet</h1>
+            <h1 className="mb-10 mt-4">Welcome to SilentChat</h1>
             <div>
            
                 <Input

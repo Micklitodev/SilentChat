@@ -84,8 +84,8 @@ export default function ChatBox() {
 
   return (
     <>
-      <Button onClick={() => handleDisconnect()} className="border border-white rounded px-2 py-2">
-        Exit
+      <Button onClick={() => handleDisconnect()} className="border border-white rounded px-2 py-2 ml-4">
+      ← Exit
       </Button>
       <div className='ml-16'>
         <div className='mt-10 border border-white rounded-md px-2 w-[90vw] h-[60vh] overflow-y-scroll overflow-x-hidden'>
