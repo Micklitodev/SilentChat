@@ -15,6 +15,7 @@ export default function ChatBox() {
   const messagesEndRef = useRef(null);
   const promptShown = useRef(false);
   const pathname = usePathname()
+  const groupName = pathname.split('/').pop();
 
   const scrollToBottom = () => {
     //@ts-ignore
@@ -52,7 +53,6 @@ export default function ChatBox() {
   }, [messages]);
 
   const sendMessage = () => {
-    const groupName = pathname.split('/').pop();
     socket.emit('message', { content: messageInput, username, groupName });
     setMessageInput('');
   };
@@ -85,10 +85,14 @@ export default function ChatBox() {
   return (
     <>
       <Button onClick={() => handleDisconnect()} className="border border-white rounded px-2 py-2 ml-4">
-      ← Exit
+        ← Exit
       </Button>
       <div className='ml-16'>
-        <div className='mt-10 border border-white rounded-md px-2 w-[90vw] h-[60vh] overflow-y-scroll overflow-x-hidden'>
+
+        <div className='flex'> 
+        <div id='messagebox' className='mt-10 border border-white rounded-md px-2 w-[90vw] h-[60vh] overflow-y-scroll overflow-x-hidden'>
+          <div className='text-center'> - {groupName} - </div>
+          <hr></hr>
           <ul>
             {messages.map((msg: any, index) => (
               <div key={index}>
@@ -99,7 +103,21 @@ export default function ChatBox() {
           </ul>
           <div ref={messagesEndRef} />
         </div>
-        <div className='flex'>
+
+        {/* <div id='usernamearea' className=' mt-10 border border-white rounded-md px-2 w-[20vw] h-[60vh] overflow-y-scroll overflow-x-hidden'>
+          <div className='text-center'> Users: </div>
+          <hr></hr>
+          <ul>
+            <li> Steveeyyb </li>
+            <li> MagicTrilly123 </li>
+            <li> SpaghettiMonsta</li>
+            <li> Meep2beep </li>
+          </ul>
+        </div> */}
+
+        </div>
+
+        <div className='flex' id='typearea'>
           <Input
             className='w-[86.2vw]'
             name='msg'
@@ -111,6 +129,7 @@ export default function ChatBox() {
             Send
           </button>
         </div>
+
       </div>
     </>
   );
