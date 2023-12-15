@@ -14,6 +14,8 @@ const io = socketIO(server, {
     }
 });
 
+const connectedUsersByGroup = {};
+
 io.on('connection', (socket) => {
     console.log('A user connected');
 
@@ -21,6 +23,15 @@ io.on('connection', (socket) => {
         socket.join(groupName);
         socket.emit('message', { content: `Welcome to ${groupName}`, username: 'Server' });
         io.to(groupName).emit('message', { content: `${username} joined the group.`, username: 'Server' });
+
+        if (!connectedUsersByGroup[groupName]) {
+            connectedUsersByGroup[groupName] = {};
+        }
+
+
+        connectedUsersByGroup[groupName][socket.id] = username;
+
+        io.to(groupName).emit('connectedUsers', Object.values(connectedUsersByGroup[groupName]));
     });
 
     socket.on('message', (msg) => {
@@ -31,8 +42,16 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('User disconnected');
+        console.log(`User disconnected: ${socket.id}`);
+
+        for (const groupName in connectedUsersByGroup) {
+            if (connectedUsersByGroup[groupName][socket.id]) {
+                delete connectedUsersByGroup[groupName][socket.id];
+                io.to(groupName).emit('connectedUsers', Object.values(connectedUsersByGroup[groupName]));
+            }
+        }
     });
+
 });
 
 const PORT = process.env.PORT || 3001;

@@ -16,12 +16,19 @@ export default function ChatBox() {
   const promptShown = useRef(false);
   const pathname = usePathname()
   const groupName = pathname.split('/').pop();
+  const [connectedUsers, setConnectedUsers] = useState([]);
 
   const scrollToBottom = () => {
     //@ts-ignore
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   };
 
+
+  useEffect(() => {
+    socket.on('connectedUsers', (users) => {
+      setConnectedUsers(users);
+    });
+  }, []);
 
   useEffect(() => {
     const joinGroup = async () => {
@@ -58,7 +65,7 @@ export default function ChatBox() {
   };
 
   const handleDisconnect = () => {
-    socket.disconnect();
+    socket.disconnect()
     window.location.assign('/');
   };
 
@@ -89,31 +96,30 @@ export default function ChatBox() {
       </Button>
       <div className='ml-16'>
 
-        <div className='flex'> 
-        <div id='messagebox' className='mt-10 border border-white rounded-md px-2 w-[90vw] h-[60vh] overflow-y-scroll overflow-x-hidden'>
-          <div className='text-center'> - {groupName} - </div>
-          <hr></hr>
-          <ul>
-            {messages.map((msg: any, index) => (
-              <div key={index}>
+        <div className='flex'>
+          <div id='messagebox' className='mt-10 border border-white rounded-md px-2 w-[70vw] h-[60vh] overflow-y-scroll overflow-x-hidden'>
+            <div className='text-center'> - {groupName} - </div>
+            <hr></hr>
+            <ul>
+              {messages.map((msg: any, index) => (
+                <div key={index}>
 
-                <li className='flex'> {msg.username}: <p className='text-green-400 ml-2'> {msg.content} </p></li>
-              </div>
-            ))}
-          </ul>
-          <div ref={messagesEndRef} />
-        </div>
+                  <li className='flex'> {msg.username}: <p className='text-green-400 ml-2'> {msg.content} </p></li>
+                </div>
+              ))}
+            </ul>
+            <div ref={messagesEndRef} />
+          </div>
 
-        {/* <div id='usernamearea' className=' mt-10 border border-white rounded-md px-2 w-[20vw] h-[60vh] overflow-y-scroll overflow-x-hidden'>
-          <div className='text-center'> Users: </div>
-          <hr></hr>
-          <ul>
-            <li> Steveeyyb </li>
-            <li> MagicTrilly123 </li>
-            <li> SpaghettiMonsta</li>
-            <li> Meep2beep </li>
-          </ul>
-        </div> */}
+          <div id='usernamearea' className=' mt-10 border border-white rounded-md px-2 w-[20vw] h-[60vh] overflow-y-scroll overflow-x-hidden'>
+            <div className='text-center'> Users: </div>
+            <hr></hr>
+            <ul>
+              {connectedUsers.map((user, index) => (
+                <li key={index}>{user}</li>
+              ))}
+            </ul>
+          </div>
 
         </div>
 
