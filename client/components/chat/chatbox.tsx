@@ -91,11 +91,10 @@ export default function ChatBox() {
 
   return (
     <>
-      <Button onClick={() => handleDisconnect()} className="border border-white rounded px-2 py-2 ml-4">
-        ← Exit
+      <Button onClick={() => handleDisconnect()} className="border border-white rounded mt-4 px-2 py-2 ml-4">
+        ← Disconnect
       </Button>
       <div className='ml-16'>
-
         <div className='flex'>
           <div id='messagebox' className='mt-10 border border-white rounded-md px-2 w-[70vw] h-[60vh] overflow-y-scroll overflow-x-hidden'>
             <div className='text-center'> - {groupName} - </div>
