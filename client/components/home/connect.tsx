@@ -27,7 +27,7 @@ const Chat = () => {
         <div className='border px-20 py-10 mt-10 rounded'>
             <h1 className="mb-10 mt-4 text-center font-bold">*Welcome to SilentChat*</h1>
             <div>
-                <p className='max-w-[200px] mb-6'> Enter an existing group name <em> or </em>  Create a new group by entering random group name. </p>
+                <p className='max-w-[200px] mb-6'> Enter an existing group name <em> or </em>  Create a new group by entering a group name. </p>
                 <Input
                     type="text"
                     id="gnJoin"
