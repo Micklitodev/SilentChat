@@ -2,16 +2,16 @@ import React from "react";
 import { InputProps } from "@/lib/types";
 
 const Input: React.FC<InputProps> = ({
-  id,
-  placeholder,
-  type,
-  name,
-  className,
-  onChange,
-  value,
-  onKeyDown
-
-}: any) => {
+                                         id,
+                                         placeholder,
+                                         type,
+                                         name,
+                                         className,
+                                         onChange,
+                                         value,
+                                         onKeyDown,
+                                         disabled
+                                     }: any) => {
   return (
     <input
       className={`${className} rounded py-2 px-2 flex wrap border border-white bg-black text-green-400`}
